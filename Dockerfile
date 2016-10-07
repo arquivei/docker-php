@@ -27,4 +27,4 @@ RUN docker-php-ext-install zip pdo_pgsql soap mcrypt opcache xmlrpc xsl \
 
 RUN echo "export TERM=xterm" > /root/.bashrc
 COPY ./run.sh /run.sh
-ENTRYPOINT ["/run.sh"]
+ENTRYPOINT ["bash", "/run.sh"]
