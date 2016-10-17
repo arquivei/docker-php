@@ -9,7 +9,7 @@ RUN export LC_ALL=en_US.UTF-8 \
 RUN apt-get update -qq \
     && apt-get install -qqy --no-install-recommends curl software-properties-common \
         git zlib1g-dev libpq-dev postgresql-client pgbouncer \
-        libxml2-dev xmlstarlet libmcrypt-dev libxslt-dev wget
+        libxml2-dev xmlstarlet libmcrypt-dev libxslt-dev wget cron
 
 RUN apt-get update \
     && apt-get install -y --no-install-recommends libmagickwand-dev \
