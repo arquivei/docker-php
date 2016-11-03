@@ -18,7 +18,7 @@ RUN apt-get update \
 RUN pecl install imagick && docker-php-ext-enable imagick
 RUN docker-php-ext-install zip pdo_pgsql soap mcrypt opcache xmlrpc xsl \
     && docker-php-ext-configure gd --enable-gd-native-ttf --with-jpeg-dir=/usr/lib/x86_64-linux-gnu --with-png-dir=/usr/lib/x86_64-linux-gnu --with-freetype-dir=/usr/lib/x86_64-linux-gnu \
-    && docker-php-ext-install gd
+    && docker-php-ext-install gd \
     && curl -L -O https://download.elastic.co/beats/filebeat/filebeat_1.2.3_amd64.deb \
     && dpkg -i filebeat_1.2.3_amd64.deb \
     && a2enmod headers cache rewrite headers expires \
