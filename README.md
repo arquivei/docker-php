@@ -1,15 +1,12 @@
 # docker-php
 
-Docker PHP based on PHP:5.6
+Docker PHP based on PHP:7.0
 
 ## Installed Packages
 
 * composer
-* cron
 * filebeat
-* git
 * postgresql-client
-* pgbouncer
 * wget
 
 ## Installed PHP Modules
