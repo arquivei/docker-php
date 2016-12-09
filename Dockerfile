@@ -25,7 +25,8 @@ RUN docker-php-ext-install zip pdo_pgsql pdo_mysql soap mcrypt opcache xmlrpc xs
     && chown -R postgres:postgres /etc/pgbouncer \
     && chown root:postgres /var/log/postgresql \
     && chmod -R 1775 /var/log/postgresql \
-    && curl -sS https://getcomposer.org/installer | php && mv compo \ser.phar /usr/local/bin/composer
+    && curl -sS https://getcomposer.org/installer | php && mv composer.phar /usr/local/bin/composer \
+    && systemctl enable filebeat
 
 RUN echo "export TERM=xterm" > /root/.bashrc
 COPY ./run.sh /run.sh
