@@ -8,9 +8,12 @@ RUN export LC_ALL=en_US.UTF-8 \
 
 RUN apt-get update -qq \
     && apt-get install -qqy --no-install-recommends curl software-properties-common \
-        zlib1g-dev libpq-dev postgresql-client \
-        libmcrypt-dev libxslt-dev wget
+        git zlib1g-dev libpq-dev postgresql-client pgbouncer \
+        libxml2-dev xmlstarlet libmcrypt-dev libxslt-dev wget cron
 
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends libmagickwand-dev \
+    && rm -rf /var/lib/apt/lists/*
 COPY ./php.ini /usr/local/etc/php/conf.d/php.ini
 
 RUN pecl install imagick && docker-php-ext-enable imagick
