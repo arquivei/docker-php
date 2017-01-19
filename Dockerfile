@@ -13,11 +13,18 @@ RUN apt-get update -qq \
 
 COPY ./php.ini /usr/local/etc/php/conf.d/php.ini
 
-RUN docker-php-ext-install zip pdo_pgsql soap mcrypt opcache xmlrpc xsl \
+RUN pecl install imagick && docker-php-ext-enable imagick
+RUN docker-php-ext-install zip pdo_pgsql pdo_mysql soap mcrypt opcache xmlrpc xsl \
+    && docker-php-ext-configure gd --enable-gd-native-ttf --with-jpeg-dir=/usr/lib/x86_64-linux-gnu --with-png-dir=/usr/lib/x86_64-linux-gnu --with-freetype-dir=/usr/lib/x86_64-linux-gnu \
+    && docker-php-ext-install gd \
     && curl -L -O https://download.elastic.co/beats/filebeat/filebeat_1.2.3_amd64.deb \
     && dpkg -i filebeat_1.2.3_amd64.deb \
     && a2enmod headers cache rewrite headers expires \
-    && curl -sS https://getcomposer.org/installer | php && mv composer.phar /usr/local/bin/composer
+    && chown -R postgres:postgres /etc/pgbouncer \
+    && chown root:postgres /var/log/postgresql \
+    && chmod -R 1775 /var/log/postgresql \
+    && curl -sS https://getcomposer.org/installer | php && mv composer.phar /usr/local/bin/composer \
+    && systemctl enable filebeat
 
 RUN echo "export TERM=xterm" > /root/.bashrc
 COPY ./run.sh /run.sh
