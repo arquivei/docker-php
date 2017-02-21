@@ -8,12 +8,27 @@ RUN export LC_ALL=en_US.UTF-8 \
 
 RUN apt-get update -qq \
     && apt-get install -qqy --no-install-recommends curl software-properties-common \
-        git zlib1g-dev libpq-dev postgresql-client pgbouncer \
-        libxml2-dev xmlstarlet libmcrypt-dev libxslt-dev wget cron
-
-RUN apt-get update \
-    && apt-get install -y --no-install-recommends libmagickwand-dev \
+        git zlib1g-dev libpq-dev postgresql-client \
+        libxml2-dev xmlstarlet libmcrypt-dev libxslt-dev wget cron libmagickwand-dev \
     && rm -rf /var/lib/apt/lists/*
+
+# Installing PGBouncer
+RUN apt-get update \
+    && apt-get install -qqy --no-install-recommends libtool automake libevent-dev \
+    && git clone https://github.com/pgbouncer/pgbouncer.git \
+    && cd pgbouncer \
+    && git submodule init && git submodule update \
+    && ./autogen.sh && ./configure --disable-evdns \
+    && make && make install \
+    && useradd --no-create-home -U postgres \
+    && mkdir /etc/pgbouncer \
+    && chown -R postgres:postgres /etc/pgbouncer \
+    && mkdir /var/log/postgresql \
+    && mkdir /var/run/postgresql \
+    && chown root:postgres /var/log/postgresql \
+    && chown root:postgres /var/run/postgresql \
+    && chmod -R 1775 /var/log/postgresql \
+    && chmod -R 1775 /var/run/postgresql
 
 RUN pecl install imagick && docker-php-ext-enable imagick
 RUN docker-php-ext-install zip pdo_pgsql pdo_mysql soap mcrypt opcache xmlrpc xsl \
@@ -22,9 +37,6 @@ RUN docker-php-ext-install zip pdo_pgsql pdo_mysql soap mcrypt opcache xmlrpc xs
     && curl -L -O https://download.elastic.co/beats/filebeat/filebeat_1.2.3_amd64.deb \
     && dpkg -i filebeat_1.2.3_amd64.deb \
     && a2enmod headers cache rewrite headers expires \
-    && chown -R postgres:postgres /etc/pgbouncer \
-    && chown root:postgres /var/log/postgresql \
-    && chmod -R 1775 /var/log/postgresql \
     && curl -sS https://getcomposer.org/installer | php && mv composer.phar /usr/local/bin/composer \
     && systemctl enable filebeat
 
