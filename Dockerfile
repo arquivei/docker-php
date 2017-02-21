@@ -8,8 +8,26 @@ RUN export LC_ALL=en_US.UTF-8 \
 
 RUN apt-get update -qq \
     && apt-get install -qqy --no-install-recommends curl software-properties-common \
-        git zlib1g-dev libpq-dev postgresql-client pgbouncer \
+        git zlib1g-dev libpq-dev postgresql-client \
         libxml2-dev xmlstarlet libmcrypt-dev libxslt-dev wget cron
+
+# Installing PGBouncer
+RUN apt-get update \
+    && apt-get install -qqy --no-install-recommends libtool automake libevent-dev \
+    && git clone https://github.com/pgbouncer/pgbouncer.git \
+    && cd pgbouncer \
+    && git submodule init && git submodule update \
+    && ./autogen.sh && ./configure --disable-evdns \
+    && make && make install \
+    && useradd --no-create-home -U postgres \
+    && mkdir /etc/pgbouncer \
+    && chown -R postgres:postgres /etc/pgbouncer \
+    && mkdir /var/log/postgresql \
+    && mkdir /var/run/postgresql \
+    && chown root:postgres /var/log/postgresql \
+    && chown root:postgres /var/run/postgresql \
+    && chmod -R 1775 /var/log/postgresql \
+    && chmod -R 1775 /var/run/postgresql
 
 RUN apt-get update \
     && apt-get install -y --no-install-recommends libmagickwand-dev \
