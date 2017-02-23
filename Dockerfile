@@ -8,9 +8,14 @@ RUN export LC_ALL=en_US.UTF-8 \
 
 RUN apt-get update -qq \
     && apt-get install -qqy --no-install-recommends curl software-properties-common \
-        git zlib1g-dev libpq-dev postgresql-client \
-        libxml2-dev xmlstarlet libmcrypt-dev libxslt-dev wget cron libmagickwand-dev \
+        git zlib1g-dev libpq-dev libxml2-dev xmlstarlet libmcrypt-dev libxslt-dev wget cron libmagickwand-dev \
     && rm -rf /var/lib/apt/lists/*
+
+# Installing PostgreSQL 9.5 Client
+RUN echo 'deb http://apt.postgresql.org/pub/repos/apt/ jessie-pgdg main' > /etc/apt/sources.list.d/pgdg.list \
+    && wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add - \
+    && apt-get update -qq \
+    && apt-get install -qqy --no-install-recommends postgresql-client-9.5
 
 # Installing PGBouncer
 RUN apt-get update \
