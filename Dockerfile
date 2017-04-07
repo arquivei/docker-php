@@ -2,8 +2,9 @@ FROM php:7-apache
 MAINTAINER Arquivei
 
 ENV DEBIAN_FRONTEND noninteractive
-
-RUN export LC_ALL=en_US.UTF-8 \
+RUN echo "America/Sao_Paulo" > /etc/timezone \
+    && dpkg-reconfigure tzdata \
+    && export LC_ALL=en_US.UTF-8 \
     && export LANG=en_US.UTF-8
 
 RUN apt-get update -qq \
