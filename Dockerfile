@@ -21,28 +21,24 @@ RUN echo 'deb http://apt.postgresql.org/pub/repos/apt/ jessie-pgdg main' > /etc/
 
 # Installing PGBouncer
 RUN apt-get update \
+    && apt-get upgrade -qqy \
     && apt-get install -qqy --no-install-recommends libtool automake libevent-dev \
-    && git clone https://github.com/pgbouncer/pgbouncer.git \
+    && git clone --recursive https://github.com/pgbouncer/pgbouncer.git \
     && cd pgbouncer \
-    && git submodule init && git submodule update \
     && ./autogen.sh && ./configure --disable-evdns \
     && make && make install \
     && useradd --no-create-home -U postgres \
-    && mkdir /etc/pgbouncer \
-    && chown -R postgres:postgres /etc/pgbouncer \
-    && mkdir /var/log/postgresql \
-    && mkdir /var/run/postgresql \
-    && chown root:postgres /var/log/postgresql \
-    && chown root:postgres /var/run/postgresql \
-    && chmod -R 1775 /var/log/postgresql \
-    && chmod -R 1775 /var/run/postgresql
+    && mkdir /etc/pgbouncer /var/log/postgresql /var/run/postgresql \
+    && chown postgres:postgres /etc/pgbouncer \
+    && chown root:postgres /var/log/postgresql /var/run/postgresql \
+    && chmod -R 1775 /var/log/postgresql /var/run/postgresql
 
 RUN pecl install imagick && docker-php-ext-enable imagick
 RUN docker-php-ext-install zip pdo_pgsql pdo_mysql soap mcrypt opcache xmlrpc xsl \
     && docker-php-ext-configure gd --enable-gd-native-ttf --with-jpeg-dir=/usr/lib/x86_64-linux-gnu --with-png-dir=/usr/lib/x86_64-linux-gnu --with-freetype-dir=/usr/lib/x86_64-linux-gnu \
     && docker-php-ext-install gd \
-    && curl -L -O https://download.elastic.co/beats/filebeat/filebeat_1.2.3_amd64.deb \
-    && dpkg -i filebeat_1.2.3_amd64.deb \
+    && curl -L -O https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-5.4.0-amd64.deb \
+    && dpkg -i filebeat-5.4.0-amd64.deb \
     && a2enmod headers cache rewrite headers expires \
     && curl -sS https://getcomposer.org/installer | php && mv composer.phar /usr/local/bin/composer \
     && systemctl enable filebeat
