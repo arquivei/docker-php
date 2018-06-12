@@ -9,16 +9,18 @@ RUN ln -fs /usr/share/zoneinfo/${DEFAULT_TIMEZONE} /etc/localtime \
     && dpkg-reconfigure -f noninteractive tzdata
 
 RUN apt-get update -qq \
-    && apt-get install -qqy --no-install-recommends curl software-properties-common \
-        git libssl-dev zlib1g-dev libpq-dev libxml2-dev xmlstarlet libmcrypt-dev libxslt-dev wget cron libmagickwand-dev pgbouncer \
+    && apt-get install -qqy --no-install-recommends curl software-properties-common git libssl-dev zlib1g-dev libpq-dev \
+        libxml2-dev xmlstarlet libmcrypt-dev libxslt-dev wget cron libmagickwand-dev pgbouncer \
     && rm -rf /var/lib/apt/lists/*
 
-RUN pecl install imagick && docker-php-ext-enable imagick
+RUN pecl install imagick && docker-php-ext-enable imagick \
+    && pecl install ds && docker-php-ext-enable ds
 RUN docker-php-ext-install zip pdo_pgsql pdo_mysql soap opcache xmlrpc xsl \
-    && docker-php-ext-configure gd --enable-gd-native-ttf --with-jpeg-dir=/usr/lib/x86_64-linux-gnu --with-png-dir=/usr/lib/x86_64-linux-gnu --with-freetype-dir=/usr/lib/x86_64-linux-gnu \
+    && docker-php-ext-configure gd --enable-gd-native-ttf --with-jpeg-dir=/usr/lib/x86_64-linux-gnu \
+        --with-png-dir=/usr/lib/x86_64-linux-gnu --with-freetype-dir=/usr/lib/x86_64-linux-gnu \
     && docker-php-ext-install gd \
-    && curl -L -O https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-5.4.0-amd64.deb \
-    && dpkg -i filebeat-5.4.0-amd64.deb \
+    && curl -L -O https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-6.2.4-amd64.deb \
+    && dpkg -i filebeat-6.2.4-amd64.deb \
     && a2enmod headers cache rewrite headers expires \
     && curl -sS https://getcomposer.org/installer | php && mv composer.phar /usr/local/bin/composer \
     && update-rc.d filebeat defaults
