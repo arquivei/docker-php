@@ -19,3 +19,4 @@ Docker PHP based on PHP:7.0
 * xmlrpc
 * xsl
 * zip
+* kafka
