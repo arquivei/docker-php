@@ -14,7 +14,7 @@ RUN apt-get update \
     && apt-get -y --no-install-recommends install ca-certificates tzdata autoconf \
     vim wget gcc build-essential libxml2-dev libssl-dev libcurl4-openssl-dev \
     pkg-config curl make libpq-dev libpspell-dev librecode-dev libcurl4-openssl-dev \
-    libxft-dev
+    libxft-dev libfreetype6-dev libpng-dev libjpeg62-dev
 
 RUN dpkg-reconfigure tzdata
 
@@ -44,13 +44,16 @@ RUN wget https://secure.php.net/distributions/php-7.2.11.tar.gz --no-check-certi
         --with-curl \
         --with-openssl \
         --with-zlib \
+        --with-gd \
+        --with-jpeg-dir \
+        --with-png-dir \
+        --with-xmlrpc \
     && make && make install \
     && cp php.ini-production /etc/php/7.2/lib/php.ini \
     && rm -rf /application/php-7.2*
 
 RUN cp /etc/php/7.2/etc/php-fpm.conf.default /etc/php/7.2/etc/php-fpm.conf
 
-#installing redis
 RUN apt-get update \
     && apt-get -y install autoconf \
     && printf "\n" | pecl install redis
