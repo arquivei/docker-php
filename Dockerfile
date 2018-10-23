@@ -10,7 +10,7 @@ RUN ln -fs /usr/share/zoneinfo/${DEFAULT_TIMEZONE} /etc/localtime \
 
 RUN apt-get update -qq \
     && apt-get install -qqy --no-install-recommends curl software-properties-common git libssl-dev zlib1g-dev libpq-dev \
-        libxml2-dev xmlstarlet libmcrypt-dev libxslt-dev wget cron libmagickwand-dev pgbouncer php7.1-phpdbg \
+        libxml2-dev xmlstarlet libmcrypt-dev libxslt-dev wget cron libmagickwand-dev pgbouncer \
     && rm -rf /var/lib/apt/lists/*
 
 RUN cd /tmp && mkdir librdkafka && cd librdkafka && git clone https://github.com/edenhill/librdkafka.git . && ./configure && make && make install
