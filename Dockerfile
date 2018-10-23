@@ -54,7 +54,7 @@ RUN mkdir /etc/php/7.2/php-fpm \
     && echo "extension=redis.so" > /etc/php/7.2/php-fpm/conf.d/redis.ini
 
 #configuring php-fpm
-COPY php-fpm/override.conf /etc/php/7.2/etc/php-fpm.d/z-overrides.conf
+COPY php-fpm/php-fpm-base.conf /etc/php/7.2/etc/php-fpm.d/z-overrides.conf
 COPY php-fpm/entrypoint.sh /entrypoint
 
 ENTRYPOINT /entrypoint
