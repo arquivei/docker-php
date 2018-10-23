@@ -1,7 +1,6 @@
 FROM ubuntu:18.04
 MAINTAINER Arquivei
 
-#tzconfig
 ARG PHP_TZ="America/Sao_Paulo"
 ENV DEBIAN_FRONTEND noninteractive
 
@@ -12,23 +11,30 @@ RUN echo $PHP_TZ > /etc/timezone \
 
 #installing ubuntu common packages
 RUN apt-get update \
-    && apt-get -y --no-install-recommends install ca-certificates tzdata vim wget gcc build-essential libxml2-dev libssl-dev libcurl4-openssl-dev pkg-config curl make libpq-dev libpspell-dev librecode-dev libcurl4-openssl-dev libxft-dev
+    && apt-get -y --no-install-recommends install ca-certificates tzdata autoconf \
+    vim wget gcc build-essential libxml2-dev libssl-dev libcurl4-openssl-dev \
+    pkg-config curl make libpq-dev libpspell-dev librecode-dev libcurl4-openssl-dev \
+    libxft-dev
 
 RUN dpkg-reconfigure tzdata
 
-#installing php wirh php-fpm and cli
+#installing php
 RUN wget https://secure.php.net/distributions/php-7.2.11.tar.gz --no-check-certificate \
     && tar zxvf php-7.2.11.tar.gz && cd php-7.2.11 \
     && ./configure --prefix=/etc/php/7.2 \
         --with-config-file-scan-dir=/etc/php/7.2/php-fpm/conf.d/ \
         --bindir=/usr/bin \
         --sbindir=/usr/sbin \
-        --enable-fpm \
         --enable-cli \
         --enable-debug \
-        --enable-soap \
-        --enable-zip \
+        --enable-fpm \
+        --enable-intl \
+        --enable-json \
         --enable-mbstring \
+        --enable-opcache \
+        --enable-soap \
+        --enable-xml \
+        --enable-zip \
         --with-fpm-user=www-data \
         --with-fpm-group=www-data \
         --with-mysqli \
@@ -55,6 +61,6 @@ RUN mkdir /etc/php/7.2/php-fpm \
 
 #configuring php-fpm
 COPY php-fpm/php-fpm-base.conf /etc/php/7.2/etc/php-fpm.d/z-overrides.conf
-COPY php-fpm/entrypoint.sh /entrypoint
+COPY ./entrypoint.sh /entrypoint.sh
 
-ENTRYPOINT /entrypoint
+ENTRYPOINT ["bash", "/entrypoint.sh"]
