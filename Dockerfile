@@ -58,9 +58,12 @@ RUN apt-get update \
     && apt-get -y install autoconf \
     && printf "\n" | pecl install redis
 
+RUN printf "\n" | pecl install xdebug
+
 RUN mkdir /etc/php/7.2/php-fpm \
     && mkdir /etc/php/7.2/php-fpm/conf.d \
-    && echo "extension=redis.so" > /etc/php/7.2/php-fpm/conf.d/redis.ini
+    && echo "extension=redis.so" > /etc/php/7.2/php-fpm/conf.d/redis.ini \
+    && echo "zend_extension=xdebug.so" > /etc/php/7.2/php-fpm/conf.d/xdebug.ini
 
 #configuring php-fpm
 COPY php-fpm/php-fpm-base.conf /etc/php/7.2/etc/php-fpm.d/z-overrides.conf
