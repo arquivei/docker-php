@@ -35,6 +35,9 @@ RUN wget https://secure.php.net/distributions/php-7.2.11.tar.gz --no-check-certi
         --enable-soap \
         --enable-xml \
         --enable-zip \
+        --enable-bcmath \
+        --enable-maintainer-zts \
+        --with-tsrm-pthreads \
         --with-fpm-user=www-data \
         --with-fpm-group=www-data \
         --with-mysqli \
