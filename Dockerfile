@@ -58,7 +58,7 @@ RUN wget https://secure.php.net/distributions/php-7.2.11.tar.gz --no-check-certi
 RUN cp /etc/php/7.2/etc/php-fpm.conf.default /etc/php/7.2/etc/php-fpm.conf
 
 RUN apt-get update \
-    && apt-get -y install autoconf \
+    && apt-get -y install autoconf php7.2-gd php-pear php-dev\
     && printf "\n" | pecl install redis
 
 RUN printf "\n" | pecl install xdebug
