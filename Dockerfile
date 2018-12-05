@@ -19,7 +19,7 @@ RUN pecl install rdkafka && docker-php-ext-enable rdkafka
 
 RUN pecl install imagick && docker-php-ext-enable imagick \
     && pecl install ds && docker-php-ext-enable ds
-RUN docker-php-ext-install zip pdo_pgsql pdo_mysql soap opcache xmlrpc xsl \
+RUN docker-php-ext-install zip pdo_pgsql pdo_mysql soap opcache xmlrpc xsl bcmath \
     && docker-php-ext-configure gd --enable-gd-native-ttf --with-jpeg-dir=/usr/lib/x86_64-linux-gnu \
         --with-png-dir=/usr/lib/x86_64-linux-gnu --with-freetype-dir=/usr/lib/x86_64-linux-gnu \
     && docker-php-ext-install gd \
