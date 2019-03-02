@@ -23,8 +23,8 @@ RUN docker-php-ext-install zip pdo_pgsql pdo_mysql soap opcache xmlrpc xsl bcmat
     && docker-php-ext-configure gd --enable-gd-native-ttf --with-jpeg-dir=/usr/lib/x86_64-linux-gnu \
         --with-png-dir=/usr/lib/x86_64-linux-gnu --with-freetype-dir=/usr/lib/x86_64-linux-gnu \
     && docker-php-ext-install gd \
-    && curl -L -O https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-6.2.4-amd64.deb \
-    && dpkg -i filebeat-6.2.4-amd64.deb \
+    && curl -L -O https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-6.6.1-amd64.deb \
+    && dpkg -i filebeat-6.6.1-amd64.deb \
     && a2enmod headers cache rewrite headers expires \
     && curl -sS https://getcomposer.org/installer | php && mv composer.phar /usr/local/bin/composer \
     && update-rc.d filebeat defaults
