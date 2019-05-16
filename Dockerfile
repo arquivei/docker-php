@@ -4,8 +4,8 @@ MAINTAINER Arquivei
 
 #installing kafka
 RUN cd /tmp && mkdir librdkafka && cd librdkafka \
-    && curl -L https://github.com/edenhill/librdkafka/archive/v0.11.6.tar.gz | tar xz \
-    && cd librdkafka-0.11.6 \
+    && curl -L https://github.com/edenhill/librdkafka/archive/v1.0.0.tar.gz | tar xz \
+    && cd librdkafka-1.0.0 \
     && ./configure && make && make install \
     && pecl install rdkafka
 
