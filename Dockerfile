@@ -13,9 +13,16 @@ RUN apt-get update -qq \
         libxml2-dev xmlstarlet libmcrypt-dev libxslt-dev wget cron libmagickwand-dev pgbouncer \
     && rm -rf /var/lib/apt/lists/*
 
-RUN cd /tmp && mkdir librdkafka && cd librdkafka && git clone https://github.com/edenhill/librdkafka.git . && ./configure && make && make install
-
-RUN pecl install rdkafka && docker-php-ext-enable rdkafka
+RUN mkdir -p /tmp/librdkafka \
+    && cd /tmp/librdkafka \
+    && curl -L https://github.com/edenhill/librdkafka/archive/v1.1.0.tar.gz | tar xz \
+    && cd librdkafka-1.1.0 \
+    && ./configure \
+    && make \
+    && make install \
+    && pecl install rdkafka \
+    && docker-php-ext-enable rdkafka \
+    && rm -rf /tmp/librdkafka
 
 RUN pecl install imagick && docker-php-ext-enable imagick \
     && pecl install ds && docker-php-ext-enable ds
