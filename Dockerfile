@@ -38,5 +38,6 @@ RUN docker-php-ext-install zip pdo_pgsql pdo_mysql soap opcache xmlrpc xsl bcmat
 
 RUN echo "export TERM=xterm" > /root/.bashrc
 COPY ./php.ini /usr/local/etc/php/conf.d/php.ini
+COPY ./openssl.cnf /etc/ssl/openssl.cnf
 COPY ./run.sh /run.sh
 ENTRYPOINT ["bash", "/run.sh"]
