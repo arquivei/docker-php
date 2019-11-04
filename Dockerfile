@@ -20,7 +20,7 @@ RUN mkdir -p /tmp/librdkafka \
     && ./configure \
     && make \
     && make install \
-    && pecl install rdkafka \
+    && pecl install rdkafka-3.1.2 \
     && docker-php-ext-enable rdkafka \
     && rm -rf /tmp/librdkafka
 
