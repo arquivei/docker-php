@@ -1,6 +1,6 @@
 # docker-php
 
-Docker PHP based on PHP:5.6
+Docker PHP based on PHP:7.1
 
 ## Installed Packages
 
