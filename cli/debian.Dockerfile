@@ -1,4 +1,4 @@
-FROM php:7.1-cli
+FROM php:7.2-cli
 
 LABEL maintainer="Engenharia Arquivei <engenharia@arquivei.com.br>"
 ARG RDKAFKA_VERSION="1.1.0"

@@ -18,20 +18,6 @@ require-%: ## Requires that a specific variable is defined, example require-MYVA
 		exit 1; \
 	fi
 
-build-custom:
-	@ if [ ! -f $(CUSTOM_VERSION)/$(CUSTOM_OS).Dockerfile ]; then \
-		echo "Could not find dockerfile: $(CUSTOM_VERSION)/$(CUSTOM_OS).Dockerfile"; \
-		exit 1; \
-	fi
-	docker build \
-		--build-arg RDKAFKA_VERSION=$(RDKAFKA_VERSION) \
-		--build-arg RDKAFKA_PECL_VERSION=$(RDKAFKA_PECL_VERSION) \
-		--file $(CUSTOM_VERSION)/$(CUSTOM_OS).Dockerfile \
-		--tag $(BASE_NAME):$(GIT_BRANCH)-$(CUSTOM_VERSION)-$(CUSTOM_OS)-rd-$(RDKAFKA_VERSION)-lib-$(RDKAFKA_PECL_VERSION) \
-		./$(CUSTOM_VERSION)
-
-publish-custom: build-custom
-
 build-latest:
 	@ if [ ! -f $(CUSTOM_VERSION)/$(CUSTOM_OS).Dockerfile ]; then \
 		echo "Could not find dockerfile: $(CUSTOM_VERSION)/$(CUSTOM_OS).Dockerfile"; \
@@ -49,23 +35,32 @@ help: ## This help.
 
 # DOCKER TASKS
 # Build the container
-build: build-apache build-cli build-fpm
-build-cli: build-cli-alpine build-cli-debian
-build-fpm: build-fpm-alpine build-fpm-debian
+build: build-cli build-fpm ## Builds all possible images
+build-cli: build-cli-alpine build-cli-debian ## Builds only the CLI based images
+build-fpm: build-fpm-alpine build-fpm-debian ## Builds only the FPM based images
 
-build-cli-alpine:
+build-cli-alpine: ## Builds the CLI in Alpine version
 	CUSTOM_OS=alpine CUSTOM_VERSION=cli $(MAKE) build-latest
 
-build-cli-debian:
+build-cli-debian: ## Builds the CLI in Debian version
 	CUSTOM_OS=debian CUSTOM_VERSION=cli $(MAKE) build-latest
 
-build-fpm-alpine:
+build-fpm-alpine: ## Builds the FPM in Alpine version
 	CUSTOM_OS=alpine CUSTOM_VERSION=fpm $(MAKE) build-latest
 
-build-fpm-debian:
+build-fpm-debian: ## Builds the FPM in Debian version
 	CUSTOM_OS=debian CUSTOM_VERSION=fpm $(MAKE) build-latest
 
-build-apache:
+build-custom: ## Creates a custom build of CUSTOM_VERSION=(cli|fpm), CUSTOM_OS=(alpine|debian) AND desired versions of: RDKAFKA_VERSION AND RDKAFKA_PECL_VERSION
+	@ if [ ! -f $(CUSTOM_VERSION)/$(CUSTOM_OS).Dockerfile ]; then \
+		echo "Could not find dockerfile: $(CUSTOM_VERSION)/$(CUSTOM_OS).Dockerfile"; \
+		exit 1; \
+	fi
 	docker build \
-		-t $(BASE_NAME):$(GIT_BRANCH)-apache \
-		-f apache/Dockerfile ./apache
+		--build-arg RDKAFKA_VERSION=$(RDKAFKA_VERSION) \
+		--build-arg RDKAFKA_PECL_VERSION=$(RDKAFKA_PECL_VERSION) \
+		--file $(CUSTOM_VERSION)/$(CUSTOM_OS).Dockerfile \
+		--tag $(BASE_NAME):$(GIT_BRANCH)-$(CUSTOM_VERSION)-$(CUSTOM_OS)-rd-$(RDKAFKA_VERSION)-lib-$(RDKAFKA_PECL_VERSION) \
+		./$(CUSTOM_VERSION)
+
+publish-custom: build-custom ## Builds and publish the custom version
