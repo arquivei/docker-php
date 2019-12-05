@@ -14,7 +14,7 @@ RUN set -xe \
     && docker-php-ext-install bcmath pdo_pgsql pdo_mysql soap zip
 
 RUN pecl install grpc && docker-php-ext-enable grpc \
-    && pecl install protobuf && docker-php-ext-enable protobuf \
+    # && pecl install protobuf && docker-php-ext-enable protobuf \
     && pecl install redis && docker-php-ext-enable redis
 
 # Build, install and enable PHP rdkafka extension
