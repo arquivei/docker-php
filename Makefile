@@ -2,10 +2,45 @@ BASE_NAME := arquivei/php
 GIT_BRANCH := $(shell git rev-parse --abbrev-ref HEAD)
 GIT_HASH := $(shell git rev-parse HEAD)
 
+# Dockerfile libs versions:
+RDKAFKA_VERSION ?= "1.1.0"
+RDKAFKA_PECL_VERSION ?= "3.1.2"
+
 # HELP
 # This will output the help for each task
 # thanks to https://marmelab.com/blog/2016/02/29/auto-documented-makefile.html
-.PHONY: help
+.PHONY: require-% help
+# This target was created inspired by this stackoverflow question:
+# https://stackoverflow.com/questions/4728810/makefile-variable-as-prerequisite/35845931
+require-%: ## Requires that a specific variable is defined, example require-MYVAR
+	@ if [ "${${*}}" = "" ]; then \
+		echo "Environment variable $* not set"; \
+		exit 1; \
+	fi
+
+build-custom:
+	@ if [ ! -f $(CUSTOM_VERSION)/$(CUSTOM_OS).Dockerfile ]; then \
+		echo "Could not find dockerfile: $(CUSTOM_VERSION)/$(CUSTOM_OS).Dockerfile"; \
+		exit 1; \
+	fi
+	docker build \
+		--build-arg RDKAFKA_VERSION=$(RDKAFKA_VERSION) \
+		--build-arg RDKAFKA_PECL_VERSION=$(RDKAFKA_PECL_VERSION) \
+		--file $(CUSTOM_VERSION)/$(CUSTOM_OS).Dockerfile \
+		--tag $(BASE_NAME):$(GIT_BRANCH)-$(CUSTOM_VERSION)-$(CUSTOM_OS)-rd-$(RDKAFKA_VERSION)-lib-$(RDKAFKA_PECL_VERSION) \
+		./$(CUSTOM_VERSION)
+
+publish-custom: build-custom
+
+build-latest:
+	@ if [ ! -f $(CUSTOM_VERSION)/$(CUSTOM_OS).Dockerfile ]; then \
+		echo "Could not find dockerfile: $(CUSTOM_VERSION)/$(CUSTOM_OS).Dockerfile"; \
+		exit 1; \
+	fi
+	docker build \
+		--file $(CUSTOM_VERSION)/$(CUSTOM_OS).Dockerfile \
+		--tag $(BASE_NAME):$(GIT_BRANCH)-$(CUSTOM_VERSION)-$(CUSTOM_OS) \
+		./$(CUSTOM_VERSION)
 
 help: ## This help.
 	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z_-]+:.*?## / {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
@@ -15,41 +50,22 @@ help: ## This help.
 # DOCKER TASKS
 # Build the container
 build: build-apache build-cli build-fpm
-
-build-nc: build-nc-apache build-nc-cli build-nc-fpm
-
-build-cli-alpine:
-	docker build -t $(BASE_NAME):$(GIT_BRANCH)-cli-alpine -f cli/alpine.Dockerfile ./cli
-
-build-cli-debian:
-	docker build -t $(BASE_NAME):$(GIT_BRANCH)-cli-debian -f cli/debian.Dockerfile ./cli
-
-build-fpm-alpine:
-	docker build -t $(BASE_NAME):$(GIT_BRANCH)-fpm-alpine -f fpm/alpine.Dockerfile ./fpm
-
-build-fpm-debian:
-	docker build -t $(BASE_NAME):$(GIT_BRANCH)-fpm-debian -f fpm/debian.Dockerfile ./fpm
-
-build-apache:
-	docker build -t $(BASE_NAME):$(GIT_BRANCH)-apache -f apache/Dockerfile ./apache
-
 build-cli: build-cli-alpine build-cli-debian
 build-fpm: build-fpm-alpine build-fpm-debian
 
-build-nc-cli-alpine:
-	docker build --no-cache -t $(BASE_NAME):$(GIT_BRANCH)-cli-alpine -f cli/alpine.Dockerfile ./cli
+build-cli-alpine:
+	CUSTOM_OS=alpine CUSTOM_VERSION=cli $(MAKE) build-latest
 
-build-nc-cli-debian:
-	docker build --no-cache -t $(BASE_NAME):$(GIT_BRANCH)-cli-debian -f cli/debian.Dockerfile ./cli
+build-cli-debian:
+	CUSTOM_OS=debian CUSTOM_VERSION=cli $(MAKE) build-latest
 
-build-nc-fpm-alpine:
-	docker build --no-cache -t $(BASE_NAME):$(GIT_BRANCH)-fpm-alpine -f fpm/alpine.Dockerfile ./fpm
+build-fpm-alpine:
+	CUSTOM_OS=alpine CUSTOM_VERSION=fpm $(MAKE) build-latest
 
-build-nc-fpm-debian:
-	docker build --no-cache -t $(BASE_NAME):$(GIT_BRANCH)-fpm-debian -f fpm/debian.Dockerfile ./fpm
+build-fpm-debian:
+	CUSTOM_OS=debian CUSTOM_VERSION=fpm $(MAKE) build-latest
 
-build-nc-apache:
-	docker build --no-cache -t $(BASE_NAME):$(GIT_BRANCH)-apache -f apache/Dockerfile ./apache
-
-build-nc-cli: build-nc-cli-alpine build-nc-cli-debian
-build-nc-fpm: build-nc-fpm-alpine build-nc-fpm-debian
+build-apache:
+	docker build \
+		-t $(BASE_NAME):$(GIT_BRANCH)-apache \
+		-f apache/Dockerfile ./apache
