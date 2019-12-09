@@ -10,7 +10,7 @@ RUN set -xe \
     && apk --no-cache --virtual .build-deps add \
         autoconf bash build-base pcre-dev python \
 # Install PHP extensions dependencies
-    && apk --no-cache add libzip-dev libxml2-dev postgresql-dev \
+    && apk --no-cache add libzip-dev libxml2-dev postgresql-dev libstdc++ \
     && docker-php-ext-install bcmath pdo_pgsql pdo_mysql soap zip
 
 RUN pecl install grpc && docker-php-ext-enable grpc \
