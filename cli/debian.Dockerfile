@@ -9,7 +9,6 @@ RUN apt-get update \
     && docker-php-ext-install zip soap bcmath pgsql pdo_pgsql pdo_mysql
 
 RUN pecl install grpc && docker-php-ext-enable grpc \
-    && pecl install protobuf && docker-php-ext-enable protobuf \
     && pecl install redis && docker-php-ext-enable redis
 
 #installing kafka
