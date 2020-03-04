@@ -7,17 +7,18 @@ ARG RDKAFKA_PECL_VERSION="3.1.2"
 RUN set -xe \
     && apk update \
 # Install build dependencies
-    && apk --no-cache --virtual .build-deps add \
-        autoconf bash build-base pcre-dev python \
+    && apk --no-cache --update --virtual .build-deps add \
+        autoconf bash build-base pcre-dev python alpine-sdk \
+        linux-headers ${PHPIZE_DEPS} \
 # Install PHP extensions dependencies
-    && apk --no-cache add libzip-dev libxml2-dev postgresql-dev libstdc++ \
-    && docker-php-ext-install bcmath pdo_pgsql pdo_mysql soap zip
-
-RUN pecl install grpc && docker-php-ext-enable grpc \
-    && pecl install redis && docker-php-ext-enable redis
-
+    && apk --no-cache add libzip-dev libxml2-dev postgresql-dev \
+    && docker-php-ext-install bcmath pdo_pgsql pdo_mysql soap zip \
+# Install PHP extensions from Pecl
+    # && pecl install protobuf && docker-php-ext-enable protobuf \
+    && pecl install grpc && docker-php-ext-enable grpc \
+    && pecl install redis && docker-php-ext-enable redis \
 # Build, install and enable PHP rdkafka extension
-RUN mkdir -p /tmp/librdkafka \
+    && mkdir -p /tmp/librdkafka \
     && cd /tmp \
     && curl -L https://github.com/edenhill/librdkafka/archive/v${RDKAFKA_VERSION}.tar.gz | tar xz -C /tmp/librdkafka --strip-components=1 \
     && cd librdkafka \

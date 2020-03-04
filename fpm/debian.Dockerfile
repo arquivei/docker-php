@@ -6,13 +6,13 @@ ARG RDKAFKA_PECL_VERSION="3.1.2"
 
 RUN apt-get update \
     && apt-get -y install git libzip-dev libxml2-dev unzip libpq-dev \
-    && docker-php-ext-install zip soap bcmath pgsql pdo_pgsql pdo_mysql
-
-RUN pecl install grpc && docker-php-ext-enable grpc \
-    && pecl install redis && docker-php-ext-enable redis
-
-#installing kafka
-RUN mkdir -p /tmp/librdkafka \
+    && docker-php-ext-install zip soap bcmath pgsql pdo_pgsql pdo_mysql \
+# Install PHP extensions from Pecl
+    && pecl install grpc && docker-php-ext-enable grpc \
+    # && pecl install protobuf && docker-php-ext-enable protobuf \
+    && pecl install redis && docker-php-ext-enable redis \
+# Build, install and enable PHP rdkafka extension
+    && mkdir -p /tmp/librdkafka \
     && cd /tmp \
     && curl -L https://github.com/edenhill/librdkafka/archive/v${RDKAFKA_VERSION}.tar.gz | tar xz -C /tmp/librdkafka --strip-components=1 \
     && cd librdkafka \
