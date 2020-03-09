@@ -11,7 +11,7 @@ RUN set -xe \
         autoconf bash build-base pcre-dev python alpine-sdk \
         linux-headers ${PHPIZE_DEPS} \
 # Install PHP extensions dependencies
-    && apk --no-cache add libzip-dev libxml2-dev postgresql-dev \
+    && apk --no-cache add libzip-dev libxml2-dev libstdc++ postgresql-dev \
     && docker-php-ext-install bcmath pdo_pgsql pdo_mysql soap zip \
 # Install PHP extensions from Pecl
     && pecl install protobuf && docker-php-ext-enable protobuf \
