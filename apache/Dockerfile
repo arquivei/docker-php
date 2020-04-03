@@ -29,6 +29,8 @@ RUN ln -fs /usr/share/zoneinfo/${DEFAULT_TIMEZONE} /etc/localtime \
     && rm -rf /tmp/librdkafka \
 # Install some other PECL extensions
     && pecl install imagick && docker-php-ext-enable imagick \
+    && pecl install protobuf && docker-php-ext-enable protobuf \
+    && pecl install grpc && docker-php-ext-enable grpc \
     && pecl install ds && docker-php-ext-enable ds \
     && pecl install timezonedb \
 # Install othe PHP extensions and Filebeat
