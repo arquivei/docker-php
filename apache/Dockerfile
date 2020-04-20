@@ -32,6 +32,7 @@ RUN ln -fs /usr/share/zoneinfo/${DEFAULT_TIMEZONE} /etc/localtime \
     && pecl install protobuf && docker-php-ext-enable protobuf \
     && pecl install grpc && docker-php-ext-enable grpc \
     && pecl install ds && docker-php-ext-enable ds \
+    && pecl install redis && docker-php-ext-enable redis \
     && pecl install timezonedb \
 # Install othe PHP extensions and Filebeat
     && docker-php-ext-install zip pdo_pgsql pdo_mysql soap opcache xmlrpc xsl bcmath \
