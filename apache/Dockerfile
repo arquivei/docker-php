@@ -35,7 +35,7 @@ RUN ln -fs /usr/share/zoneinfo/${DEFAULT_TIMEZONE} /etc/localtime \
     && pecl install redis && docker-php-ext-enable redis \
     && pecl install timezonedb \
 # Install othe PHP extensions and Filebeat
-    && docker-php-ext-install zip pdo_pgsql pdo_mysql soap opcache xmlrpc xsl bcmath \
+    && docker-php-ext-install zip pdo_pgsql pdo_mysql soap opcache xmlrpc xsl bcmath intl \
     && docker-php-ext-configure gd --enable-gd-native-ttf --with-jpeg-dir=/usr/lib/x86_64-linux-gnu \
         --with-png-dir=/usr/lib/x86_64-linux-gnu --with-freetype-dir=/usr/lib/x86_64-linux-gnu \
     && docker-php-ext-install gd
