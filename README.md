@@ -15,6 +15,7 @@ Docker PHP based on PHP:7.1
 ## Installed PHP Modules
 
 * gd
+* intl
 * mcrypt
 * opcache
 * pdo_pgsql
