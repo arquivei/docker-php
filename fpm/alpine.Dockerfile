@@ -1,8 +1,8 @@
-FROM php:7.3-fpm-alpine
+FROM php:7.4-fpm-alpine
 
 LABEL maintainer="Engenharia Arquivei <engenharia@arquivei.com.br>"
-ARG RDKAFKA_VERSION="1.1.0"
-ARG RDKAFKA_PECL_VERSION="3.1.2"
+ARG RDKAFKA_VERSION="1.5.3"
+ARG RDKAFKA_PECL_VERSION="4.0.4"
 
 RUN set -xe \
     && apk update \
