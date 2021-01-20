@@ -1,20 +1,19 @@
-FROM php:7.4-fpm-alpine
+FROM php:8.0-fpm-alpine
 
 LABEL maintainer="Engenharia Arquivei <engenharia@arquivei.com.br>"
 ARG RDKAFKA_VERSION="1.5.3"
-ARG RDKAFKA_PECL_VERSION="4.0.4"
+ARG RDKAFKA_PECL_VERSION="5.0.0"
 
 RUN set -xe \
     && apk update \
 # Install build dependencies
     && apk --no-cache --virtual .build-deps add \
-        autoconf bash build-base pcre-dev python \
+        autoconf bash build-base pcre-dev python3 linux-headers \
 # Install PHP extensions dependencies
     && apk --no-cache add libzip-dev libxml2-dev postgresql-dev libstdc++ \
     && docker-php-ext-install bcmath pdo_pgsql pdo_mysql soap zip
 
 RUN pecl install grpc && docker-php-ext-enable grpc \
-    && pecl install protobuf && docker-php-ext-enable protobuf \
     && pecl install redis && docker-php-ext-enable redis
 
 # Build, install and enable PHP rdkafka extension
