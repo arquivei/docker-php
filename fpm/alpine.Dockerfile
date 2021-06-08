@@ -16,6 +16,8 @@ RUN set -xe \
 RUN pecl install grpc && docker-php-ext-enable grpc \
     && pecl install redis && docker-php-ext-enable redis
 
+RUN echo "expose_php=0" >  /usr/local/etc/php/conf.d/docker-php-arquivei.ini
+
 # Build, install and enable PHP rdkafka extension
 RUN mkdir -p /tmp/librdkafka \
     && cd /tmp \

@@ -11,6 +11,8 @@ RUN apt-get update \
 RUN pecl install grpc && docker-php-ext-enable grpc \
     && pecl install redis && docker-php-ext-enable redis
 
+RUN echo "expose_php=0" >  /usr/local/etc/php/conf.d/docker-php-arquivei.ini
+
 #installing kafka
 RUN mkdir -p /tmp/librdkafka \
     && cd /tmp \
