@@ -8,7 +8,7 @@ RUN set -xe \
     && apk update \
 # Install build dependencies
     && apk --no-cache --update --virtual .build-deps add \
-        autoconf bash build-base pcre-dev python alpine-sdk \
+        autoconf bash build-base pcre-dev python3 alpine-sdk \
         linux-headers ${PHPIZE_DEPS} \
 # Install PHP extensions dependencies
     && apk --no-cache add libzip-dev libxml2-dev libstdc++ postgresql-dev \
@@ -30,3 +30,5 @@ RUN set -xe \
     && rm -rf /tmp/librdkafka \
 # Remove build dependencies. MUST BE LAST COMMAND!
     && apk del .build-deps
+
+RUN echo "expose_php=0" >  /usr/local/etc/php/conf.d/docker-php-arquivei.ini
