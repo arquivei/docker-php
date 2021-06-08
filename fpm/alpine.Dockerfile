@@ -30,3 +30,5 @@ RUN set -xe \
     && rm -rf /tmp/librdkafka \
 # Remove build dependencies. MUST BE LAST COMMAND!
     && apk del .build-deps
+
+RUN echo "expose_php=0" >  /usr/local/etc/php/conf.d/docker-php-arquivei.ini
