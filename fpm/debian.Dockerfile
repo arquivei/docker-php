@@ -22,3 +22,5 @@ RUN apt-get update \
     && pecl install rdkafka-${RDKAFKA_PECL_VERSION} \
     && docker-php-ext-enable rdkafka \
     && rm -rf /tmp/librdkafka
+
+RUN echo "expose_php=0" >  /usr/local/etc/php/conf.d/docker-php-arquivei.ini
